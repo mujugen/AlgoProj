@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/bootstrap.min.css" />
     <link rel="stylesheet" href="./styles/styles.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="scripts/merge-sort.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Livvic&display=swap"
+      rel="stylesheet"
+    />
     <title>Merge Sort</title>
   </head>
   <body>
@@ -91,12 +93,18 @@
           />
         </div>
         <div class="mt-4">
-          <button id="run" class="btn btn-primary" onclick="sort()">Run</button>
+          <button id="sort" class="btn btn-primary">Sort</button>
           <button id="reset" class="btn btn-secondary">Reset</button>
         </div>
       </div>
 
-      <div class="visualizer justify-content-center align-items-center"></div>
+      <div
+        class="visualizer justify-content-center align-items-center animation-zone-parent"
+      >
+        <section class="animation-zone"></section>
+      </div>
     </main>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="scripts/merge-sort.js"></script>
   </body>
 </html>

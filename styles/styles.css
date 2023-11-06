@@ -106,14 +106,54 @@ main {
   padding-left: 5px;
 }
 
-.array-container {
-  display: flex;
-  align-items: center;
-}
-
 .array-element {
   border: 1px solid #000;
   padding: 10px;
   margin: 5px;
   background: #ccc;
+}
+
+.animation-zone {
+  position: relative;
+  height: 60vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 50px;
+}
+
+.animation-zone-parent {
+  position: relative;
+  width: 90%;
+  margin: 0 auto;
+}
+
+section.animation-zone div.array-container {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+  position: absolute;
+}
+
+section.animation-zone div.array-container div.array-element {
+  height: 40px;
+  width: 40px;
+  margin: 0 1px 0 1px;
+  background: #ffffff;
+  border: 2px solid #949494;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #181818;
+}
+
+section.animation-zone div.array-container div.array-element p {
+  font-size: 14px;
+  line-height: 14px;
 }
