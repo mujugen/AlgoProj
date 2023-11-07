@@ -62,6 +62,9 @@ $(document).ready(() => {
       return;
     }
     $("section.errors p").text("");
+    timeout = 400 - document.getElementById("timeoutSpeed").value;
+    console.log(timeout);
+
     let inputArray = document.getElementById("arrayValues").value.split(",");
     if (inputArray.length <= 1) {
       inputArray = [2, 8, 1, 6, 3, 7, 5, 9];

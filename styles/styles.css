@@ -157,3 +157,11 @@ section.animation-zone div.array-container div.array-element p {
   font-size: 14px;
   line-height: 14px;
 }
+
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  width: 100%;
+}
