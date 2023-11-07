@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/bootstrap.min.css" />
     <link rel="stylesheet" href="./styles/styles.css" />
+    <link
+      href="https://unpkg.com/vis-network/styles/vis-network.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
     <title>Dijkstra</title>
   </head>
   <body>
@@ -55,8 +62,16 @@
       </div>
     </nav>
     <main>
-      <h1 class="justify-content-center align-items-center mt-5">Dijkstra</h1>
-      <div class="visualizer justify-content-center align-items-center"></div>
+      <h1 class="justify-content-center align-items-center mt-5">
+        Dijkstra's Algorithm Visualizer
+      </h1>
+      <button id="runDijkstraBtn">Run Dijkstra</button>
+      <button id="customGraph" onclick="importGraph()">customGraph</button>
+      <div class="visualizer justify-content-center align-items-center">
+        <div id="graph"></div>
+      </div>
     </main>
+
+    <script src="scripts/dijkstra.js"></script>
   </body>
 </html>

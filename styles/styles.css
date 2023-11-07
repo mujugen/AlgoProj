@@ -181,3 +181,27 @@ section.animation-zone div.array-container div.array-element p {
   max-height: 500px;
   overflow-y: auto;
 }
+#graph {
+}
+
+.node {
+  fill: rgb(39, 107, 255);
+  stroke: rgb(50, 50, 50);
+}
+
+.link {
+  stroke: rgb(50, 50, 50);
+  stroke-width: 1px;
+}
+
+.grid-line {
+  stroke: lightgrey;
+  stroke-width: 0.5;
+  shape-rendering: crispEdges;
+}
+
+.grid-line {
+  stroke: lightgrey;
+  stroke-width: 0;
+  shape-rendering: crispEdges;
+}
