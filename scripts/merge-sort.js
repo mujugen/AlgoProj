@@ -10,9 +10,8 @@ function displayArray(arr) {
   removeAll();
   let $arrayContainer = $("<div></div>").addClass("array-container");
   for (i of arr) {
-    let $value = $("<p></p>").text(i);
-    let $element = $("<div></div>").addClass("array-element");
-    $arrayContainer.append($element.append($value));
+    let $element = $("<div></div>").addClass("array-element").text(i);
+    $arrayContainer.append($element);
   }
   $("section.animation-zone").append($arrayContainer);
 
@@ -71,9 +70,10 @@ function getArrayValue() {
 function createSubArray(arr, from, to) {
   let $container = $("<div></div>").addClass("array-container");
   for (let i = from; i < to; i++) {
-    let $value = $("<p></p>").text($(arr.childNodes[i]).text());
-    let $element = $("<div></div>").addClass("array-element");
-    $container.append($element.append($value));
+    let $element = $("<div></div>")
+      .addClass("array-element")
+      .text($(arr.childNodes[i]).text());
+    $container.append($element);
   }
   return $container[0];
 }
