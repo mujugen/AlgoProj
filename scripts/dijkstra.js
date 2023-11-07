@@ -4,6 +4,9 @@ let nodeCount = 0;
 
 const nodeRadius = 5;
 const graphScale = 20;
+const defaultZoom = 2.5;
+const translateX = -1700;
+const translateY = -250;
 let width;
 let height;
 function resizeSVG() {
@@ -72,9 +75,6 @@ svg
   .style("stroke", "none");
 
 const g = svg.append("g");
-const defaultZoom = 2;
-const translateX = -1200;
-const translateY = -150;
 
 g.attr(
   "transform",
@@ -92,53 +92,54 @@ const yScale = d3
   .range([height, 0]);
 
 // Run Dijkstra's Algorithm
-document
-  .getElementById("runDijkstraBtn")
-  .addEventListener("click", function () {
-    const source = prompt("Enter source node id for Dijkstra:");
-    const destination = prompt("Enter destination node id for Dijkstra:");
+function runDijkstra() {
+  const source = document.getElementById("startNodeInput").value.toLowerCase();
+  const destination = document
+    .getElementById("endNodeInput")
+    .value.toLowerCase();
 
-    if (!getNodeByName(source) || !getNodeByName(destination)) {
-      alert("Invalid node(s)!");
-      return;
+  // Validation for the nodes
+  if (!getNodeByName(source) || !getNodeByName(destination)) {
+    alert("Invalid node(s)!");
+    return;
+  }
+
+  // Run Dijkstra's algorithm
+  const { distances, previous } = dijkstra(nodes, links, source);
+
+  const path = [];
+  for (let at = destination; at != null; at = previous[at]) {
+    path.push(at);
+  }
+  path.reverse();
+
+  if (path[0] !== source) {
+    alert("No path found!");
+    return;
+  }
+
+  // Update the graph colors
+  nodes.forEach((node) => {
+    if (path.includes(node.id)) {
+      node.color = "green";
+      console.log(`node = ${JSON.stringify(node)}`);
+    } else {
+      node.color = "#999";
     }
-
-    // Run Dijkstra's algorithm
-    const { distances, previous } = dijkstra(nodes, links, source);
-
-    const path = [];
-    for (let at = destination; at != null; at = previous[at]) {
-      path.push(at);
-    }
-    path.reverse();
-
-    if (path[0] !== source) {
-      alert("No path found!");
-      return;
-    }
-
-    // Update the graph colors
-    nodes.forEach((node) => {
-      if (path.includes(node.id)) {
-        node.color = "green";
-        console.log(`node = ${JSON.stringify(node)}`);
-      } else {
-        node.color = "#999";
-      }
-    });
-
-    links.forEach((link) => {
-      if (path.includes(link.source) && path.includes(link.target)) {
-        link.color = "green";
-        console.log(`path = ${path}`);
-      } else {
-        link.color = "#999";
-      }
-    });
-
-    // After running the algorithm, update the graph to reflect changes
-    updateGraph();
   });
+
+  links.forEach((link) => {
+    if (path.includes(link.source) && path.includes(link.target)) {
+      link.color = "green";
+      console.log(`path = ${path}`);
+    } else {
+      link.color = "#999";
+    }
+  });
+
+  // After running the algorithm, update the graph to reflect changes
+  updateGraph();
+}
 
 function updateGraph() {
   const nodeElements = g.selectAll(".node").data(nodes, (d) => d.id); // Change here: use 'g' instead of 'svg'
