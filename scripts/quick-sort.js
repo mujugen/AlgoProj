@@ -37,8 +37,6 @@ function highlightElement(index, color) {
 function nextStep() {
   if (stack.length === 0) {
     if (isSorted) {
-      console.log("Sorting complete.");
-      updateStepDisplay("Sorting complete.");
       clearInterval(sortingInterval);
     } else {
       console.log("No more partitions to sort.");
@@ -100,9 +98,6 @@ function reset() {
   updateArrayVisualization();
 }
 
-// Example usage:
-const arrayToSort = [3, 6, 8, 10, 15, 2, 12, 1, 4, 13];
-
 function updateStepDisplay(stepText) {
   const stepDisplay = document.getElementById("step-display");
   const newParagraph = document.createElement("p");
@@ -112,7 +107,11 @@ function updateStepDisplay(stepText) {
 
 function sort() {
   timeout = 4500 - document.getElementById("timeoutSpeed").value;
+  let arrayToSort = document.getElementById("arrayValues").value.split(",");
+  if (arrayToSort.length <= 1) {
+    arrayToSort = [2, 8, 1, 6, 3, 7, 5, 9];
+  }
   quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
   nextStep();
-  sortingInterval = setInterval(nextStep, 200); // Auto-sort every 200ms
+  sortingInterval = setInterval(nextStep, 200);
 }
