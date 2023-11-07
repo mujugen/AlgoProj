@@ -92,7 +92,7 @@ const yScale = d3
   .range([height, 0]);
 
 // Run Dijkstra's Algorithm
-function runDijkstra() {
+async function runDijkstra() {
   removeAllStepDisplayElements();
   const source = document.getElementById("startNodeInput").value.toLowerCase();
   const destination = document
@@ -106,8 +106,8 @@ function runDijkstra() {
   }
 
   // Run Dijkstra's algorithm
-  const { distances, previous } = dijkstra(nodes, links, source);
-
+  const { distances, previous } = await dijkstra(nodes, links, source);
+  resetGraphColoring();
   const path = [];
   for (let at = destination; at != null; at = previous[at]) {
     path.push(at);
@@ -118,7 +118,8 @@ function runDijkstra() {
     alert("No path found!");
     return;
   }
-
+  console.log("path");
+  console.log(path);
   // Update the graph colors
   nodes.forEach((node) => {
     if (path.includes(node.id)) {
@@ -238,51 +239,75 @@ function updateGraph() {
 }
 
 function dijkstra(nodes, links, startNode) {
-  updateStepDisplay("Running Dijkstra's algorithm...");
+  return new Promise((resolve) => {
+    updateStepDisplay("Running Dijkstra's algorithm...");
 
-  const unvisited = new Set(nodes.map((n) => n.id)); // Changed to Set for efficient deletion
-  const distances = {};
-  const previous = {};
+    const unvisited = new Set(nodes.map((n) => n.id));
+    const distances = {};
+    const previous = {};
 
-  nodes.forEach((node) => {
-    distances[node.id] = Infinity; // initialize all distances to Infinity
-    previous[node.id] = null; // no previous nodes at the beginning
-  });
-
-  distances[startNode] = 0; // distance to the start node is 0
-
-  while (unvisited.size > 0) {
-    // find the node with the smallest known distance
-    let currentNode = [...unvisited].reduce((nearest, node) => {
-      return distances[node] < distances[nearest] ? node : nearest;
+    nodes.forEach((node) => {
+      distances[node.id] = Infinity;
+      previous[node.id] = null;
     });
-    updateStepDisplay(
-      `Visiting node ${currentNode} with current shortest distance of ${distances[currentNode]}.`
-    );
 
-    // remove current node from unvisited set
-    unvisited.delete(currentNode);
+    distances[startNode] = 0;
 
-    // find neighboring nodes
-    let neighbors = links
-      .filter((l) => l.source === currentNode || l.target === currentNode) // Adjust to include bidirectional
-      .map((l) => (l.source === currentNode ? l.target : l.source));
-
-    for (let neighbor of neighbors) {
-      let link = links.find(
-        (l) =>
-          (l.source === currentNode && l.target === neighbor) ||
-          (l.target === currentNode && l.source === neighbor)
-      );
-      let alt = distances[currentNode] + parseFloat(link.weight);
-      if (alt < distances[neighbor]) {
-        distances[neighbor] = alt;
-        previous[neighbor] = currentNode;
+    function visitNextNode() {
+      if (unvisited.size === 0) {
+        resolve({ distances, previous });
+        return; // No more nodes to visit
       }
-    }
-  }
 
-  return { distances, previous };
+      // find the node with the smallest known distance
+      let currentNode = [...unvisited].reduce((nearest, node) => {
+        return distances[node] < distances[nearest] ? node : nearest;
+      });
+
+      updateStepDisplay(
+        `Visiting node ${currentNode} with current shortest distance of ${distances[currentNode]}.`
+      );
+      console.log(previous);
+      highlightPath(previous, currentNode);
+      let visitingNode = getNodeByName(currentNode);
+      if (visitingNode) {
+        visitingNode.color = "#3266a8"; // Change color to red when visiting
+        updateGraph();
+      }
+
+      // remove current node from unvisited set
+      unvisited.delete(currentNode);
+
+      // find neighboring nodes
+      let neighbors = links
+        .filter((l) => l.source === currentNode || l.target === currentNode)
+        .map((l) => (l.source === currentNode ? l.target : l.source));
+
+      for (let neighbor of neighbors) {
+        let link = links.find(
+          (l) =>
+            (l.source === currentNode && l.target === neighbor) ||
+            (l.target === currentNode && l.source === neighbor)
+        );
+        let alt = distances[currentNode] + parseFloat(link.weight);
+        if (alt < distances[neighbor]) {
+          distances[neighbor] = alt;
+          previous[neighbor] = currentNode;
+        }
+      }
+
+      // Call visitNextNode again after 1 second
+      setTimeout(() => {
+        if (visitingNode) {
+          visitingNode.color = "#999"; // Reset color after leaving the node
+          updateGraph();
+        }
+        visitNextNode();
+      }, 1000);
+    }
+
+    visitNextNode();
+  });
 }
 
 function importGraph() {
@@ -337,7 +362,45 @@ function removeAllStepDisplayElements() {
     stepDisplay.removeChild(stepDisplay.firstChild);
   }
 }
+function highlightPath(previous, currentNode) {
+  let pathNode = currentNode;
+  while (previous[pathNode]) {
+    // Set the current path node color to red
+    let currentNodeObj = getNodeByName(pathNode);
+    if (currentNodeObj) {
+      currentNodeObj.color = "#3266a8";
+    }
 
+    // Set the link to the previous node to red
+    let link = links.find(
+      (l) =>
+        (l.source === previous[pathNode] && l.target === pathNode) ||
+        (l.target === previous[pathNode] && l.source === pathNode)
+    );
+    if (link) {
+      link.color = "#3266a8";
+    }
+
+    // Set the previous path node color to red
+    let prevNodeObj = getNodeByName(previous[pathNode]);
+    if (prevNodeObj) {
+      prevNodeObj.color = "#3266a8";
+    }
+
+    pathNode = previous[pathNode];
+  }
+  updateGraph();
+}
+
+function resetGraphColoring() {
+  nodes.forEach((node) => {
+    node.color = "#999"; // Original color
+  });
+  links.forEach((link) => {
+    link.color = "#999"; // Original color
+  });
+  updateGraph();
+}
 importGraph();
 resizeSVG();
 window.addEventListener("resize", resizeSVG);
