@@ -51,12 +51,15 @@ main {
   display: flex;
   flex-direction: column;
   text-align: center;
+  padding-left: 100px;
+  padding-right: 100px;
 }
 
 .visualizer {
+  width: 100% !important;
   background-color: white;
   height: 700px;
-  margin: 50px;
+  margin-top: 50px;
   border: 2px solid #e5e7e8;
   border-radius: 5px;
 }

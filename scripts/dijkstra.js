@@ -93,6 +93,7 @@ const yScale = d3
 
 // Run Dijkstra's Algorithm
 function runDijkstra() {
+  removeAllStepDisplayElements();
   const source = document.getElementById("startNodeInput").value.toLowerCase();
   const destination = document
     .getElementById("endNodeInput")
@@ -187,9 +188,24 @@ function updateGraph() {
     .append("path")
     .attr("class", "link")
     .attr("d", function (d) {
+      const offset = nodeRadius; // Assuming nodeRadius is defined elsewhere
       const sourceNode = getNodeByName(d.source);
       const targetNode = getNodeByName(d.target);
-      return `M${sourceNode.x},${sourceNode.y}L${targetNode.x},${targetNode.y}`;
+
+      // Calculate the direction vector from source to target
+      const dx = targetNode.x - sourceNode.x;
+      const dy = targetNode.y - sourceNode.y;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      const unitDx = dx / length;
+      const unitDy = dy / length;
+
+      // Calculate offset points
+      const sourceX = sourceNode.x + unitDx * offset;
+      const sourceY = sourceNode.y + unitDy * offset;
+      const targetX = targetNode.x - unitDx * offset;
+      const targetY = targetNode.y - unitDy * offset;
+
+      return `M${sourceX},${sourceY}L${targetX},${targetY}`;
     })
     .attr("fill", "none")
     .attr("stroke", (d) => d.color || "#999")
@@ -206,6 +222,7 @@ function updateGraph() {
     .enter()
     .append("text")
     .attr("class", "text")
+    .style("font-size", "12px")
     .attr(
       "x",
       (d) => (getNodeByName(d.source).x + getNodeByName(d.target).x) / 2
@@ -221,8 +238,9 @@ function updateGraph() {
 }
 
 function dijkstra(nodes, links, startNode) {
-  console.log("running dijkstra");
-  const unvisited = nodes.map((n) => n.id);
+  updateStepDisplay("Running Dijkstra's algorithm...");
+
+  const unvisited = new Set(nodes.map((n) => n.id)); // Changed to Set for efficient deletion
   const distances = {};
   const previous = {};
 
@@ -233,19 +251,22 @@ function dijkstra(nodes, links, startNode) {
 
   distances[startNode] = 0; // distance to the start node is 0
 
-  while (unvisited.length > 0) {
+  while (unvisited.size > 0) {
     // find the node with the smallest known distance
-    let currentNode = unvisited.reduce((nearest, node) => {
+    let currentNode = [...unvisited].reduce((nearest, node) => {
       return distances[node] < distances[nearest] ? node : nearest;
     });
+    updateStepDisplay(
+      `Visiting node ${currentNode} with current shortest distance of ${distances[currentNode]}.`
+    );
 
     // remove current node from unvisited set
-    unvisited.splice(unvisited.indexOf(currentNode), 1);
+    unvisited.delete(currentNode);
 
     // find neighboring nodes
     let neighbors = links
-      .filter((l) => l.source === currentNode)
-      .map((l) => l.target);
+      .filter((l) => l.source === currentNode || l.target === currentNode) // Adjust to include bidirectional
+      .map((l) => (l.source === currentNode ? l.target : l.source));
 
     for (let neighbor of neighbors) {
       let link = links.find(
@@ -264,18 +285,6 @@ function dijkstra(nodes, links, startNode) {
   return { distances, previous };
 }
 
-function exportGraph() {
-  const graph = {
-    nodes: nodes,
-    links: links,
-    nodeCount: nodeCount,
-    nodeCounter: nodeCounter,
-    nodeName: nodeName,
-  };
-  let serializedGraph = JSON.stringify(graph);
-  localStorage.setItem("graphData", serializedGraph);
-}
-
 function importGraph() {
   let serializedGraph = localStorage.getItem("graphData");
   if (serializedGraph) {
@@ -287,6 +296,9 @@ function importGraph() {
       { id: "d", x: 1140, y: 240, color: "#999" },
       { id: "e", x: 1100, y: 200, color: "#999" },
       { id: "f", x: 1160, y: 160, color: "#999" },
+      { id: "g", x: 1040, y: 160, color: "#999" },
+      { id: "h", x: 1020, y: 220, color: "#999" },
+      { id: "i", x: 1100, y: 140, color: "#999" },
     ];
 
     links = [
@@ -297,12 +309,35 @@ function importGraph() {
       { source: "d", target: "e", weight: "1", color: "#999" },
       { source: "e", target: "f", weight: "2", color: "#999" },
       { source: "d", target: "f", weight: "1", color: "#999" },
+      { source: "e", target: "g", weight: "2", color: "#999" },
+      { source: "h", target: "g", weight: "2", color: "#999" },
+      { source: "c", target: "h", weight: "2", color: "#999" },
+      { source: "g", target: "i", weight: "1", color: "#999" },
+      { source: "f", target: "i", weight: "1", color: "#999" },
+      { source: "e", target: "i", weight: "1", color: "#999" },
     ];
     updateGraph();
   } else {
     console.warn("No graph data found in local storage.");
   }
 }
+
+function updateStepDisplay(stepText) {
+  const stepDisplay = document.getElementById("step-display");
+  const newParagraph = document.createElement("p");
+  newParagraph.textContent = stepText;
+  stepDisplay.insertBefore(newParagraph, stepDisplay.firstChild);
+}
+
+function removeAllStepDisplayElements() {
+  const stepDisplay = document.getElementById("step-display");
+
+  // Remove all child nodes while there are child nodes left
+  while (stepDisplay.firstChild) {
+    stepDisplay.removeChild(stepDisplay.firstChild);
+  }
+}
+
 importGraph();
 resizeSVG();
 window.addEventListener("resize", resizeSVG);
