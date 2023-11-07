@@ -29,7 +29,7 @@ function highlightElement(index, color) {
     element.style.backgroundColor = color;
 
     setTimeout(() => {
-      element.style.backgroundColor = ""; // Reset background color after a delay
+      element.style.backgroundColor = "";
     }, 500);
   }
 }
@@ -93,11 +93,6 @@ function partition(low, high) {
   });
 }
 
-function reset() {
-  stack = [];
-  updateArrayVisualization();
-}
-
 function updateStepDisplay(stepText) {
   const stepDisplay = document.getElementById("step-display");
   const newParagraph = document.createElement("p");
@@ -106,6 +101,8 @@ function updateStepDisplay(stepText) {
 }
 
 function sort() {
+  let stepLabel = document.getElementById("step-label");
+  stepLabel.style.display = "block";
   timeout = 4500 - document.getElementById("timeoutSpeed").value;
   let arrayToSort = document.getElementById("arrayValues").value.split(",");
   if (arrayToSort.length <= 1) {
@@ -114,4 +111,8 @@ function sort() {
   quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
   nextStep();
   sortingInterval = setInterval(nextStep, 200);
+}
+
+function reset() {
+  window.location.reload();
 }
