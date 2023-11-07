@@ -176,3 +176,8 @@ section.animation-zone div.array-container div.array-element p {
 .array-element.green {
   background: green !important; /* Highlight color for the pivot element */
 }
+
+.step-display {
+  max-height: 500px;
+  overflow-y: auto;
+}

@@ -102,14 +102,16 @@ function reset() {
 
 // Example usage:
 const arrayToSort = [3, 6, 8, 10, 15, 2, 12, 1, 4, 13];
-quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
 
 function updateStepDisplay(stepText) {
   const stepDisplay = document.getElementById("step-display");
-  stepDisplay.innerText = stepText;
+  const newParagraph = document.createElement("p");
+  newParagraph.textContent = stepText;
+  stepDisplay.insertBefore(newParagraph, stepDisplay.firstChild);
 }
 
 function sort() {
+  quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
   nextStep();
   sortingInterval = setInterval(nextStep, 200); // Auto-sort every 200ms
 }
