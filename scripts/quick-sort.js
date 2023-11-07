@@ -2,7 +2,7 @@ let stack = [];
 let arr; // Initialize the arr variable
 let isSorted = false;
 let sortingInterval; // Interval for auto-sorting
-
+let timeout = 2000;
 function updateArrayVisualization() {
   const container = document.getElementById("array-container");
   container.innerHTML = "";
@@ -91,7 +91,7 @@ function partition(low, high) {
     setTimeout(() => {
       updateArrayVisualization();
       resolve(i + 1); // resolve the promise with the pivot index
-    }, 2000);
+    }, timeout);
   });
 }
 
@@ -111,6 +111,7 @@ function updateStepDisplay(stepText) {
 }
 
 function sort() {
+  timeout = 4500 - document.getElementById("timeoutSpeed").value;
   quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
   nextStep();
   sortingInterval = setInterval(nextStep, 200); // Auto-sort every 200ms
