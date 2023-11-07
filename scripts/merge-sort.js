@@ -2,20 +2,10 @@ const sideMargin = 20;
 const topMargin = 20;
 let timeout = 200;
 
-/**
- * Deletes all div.array-container from DOM
- * @public
- */
 function removeAll() {
   $("div.array-container").remove();
 }
 
-/**
- * Creates and appends a jquery container with the given array
- * @public
- * @param {array} arr - array to be displayed
- * @returns {Jquery Object}
- */
 function displayArray(arr) {
   removeAll();
   let $arrayContainer = $("<div></div>").addClass("array-container");
@@ -41,27 +31,8 @@ function displayArray(arr) {
   return $arrayContainer;
 }
 
-/**
- * Parses and converts a string to an array
- * @public
- * @param {string} str - string to be converted into an array
- */
-function parse(str) {
-  let replaced = str.replace(/\s/g, "");
-  return JSON.parse(replaced);
-}
-
-let sorted = false;
-
 $(document).ready(() => {
-  // Sort button
-
   $("#sort").click(() => {
-    if (sorted) {
-      $("section.errors p").text("Already sorted!");
-      return;
-    }
-    $("section.errors p").text("");
     timeout = 400 - document.getElementById("timeoutSpeed").value;
     console.log(timeout);
 
@@ -72,17 +43,11 @@ $(document).ready(() => {
     $container = displayArray(inputArray);
     let $array = getArrayValue();
     sort($array[0]);
-    sorted = true;
   });
 
   // Unsort button
 
   $("#unsort").click(() => {
-    if (!sorted) {
-      $("section.errors p").text("Already unsorted!");
-      return;
-    }
-    $("section.errors p").text("");
     let sortedArray = $("div.array-container")[0];
     let unsortedArray = [];
     for (let i = sortedArray.childNodes.length - 1; i >= 0; i--)
@@ -99,67 +64,10 @@ function unsort(arr) {
   $container = displayArray(arr);
 }
 
-/**
- * @public
- * @returns {Jquery Object} A container with an array that can be animated
- */
 function getArrayValue() {
   return $container;
 }
 
-/**
- * @public
- * @returns {Javascript Object} An object containing the value for the animation miliseconds
- */
-
-$(document).ready(() => {
-  // Side Menu
-
-  $("#settings-btn").click(() => {
-    $("#settings").css("transform", "translateX(400px)");
-    $("header").animate({ opacity: 0.5 }, { duration: 400 });
-    $("main").animate({ opacity: 0.5 }, { duration: 400 });
-  });
-  $("#close-menu").click(() => {
-    $("#settings").css("transform", "translateX(0)");
-    $("header").animate({ opacity: 1 }, { duration: 400 });
-    $("main").animate({ opacity: 1 }, { duration: 400 });
-  });
-
-  // Save Settings Button
-
-  $("#save-settings").click(() => {
-    try {
-      if ($("#arr").val() != "") {
-        let arr = parse($("#arr").val());
-        $container = displayArray(arr);
-        sorted = false;
-      }
-      $("#settings-error").text("");
-      if ($("#timeout").val() < 0) {
-        $("p#success").text("");
-        $("#settings-error").text("Timeout cannot be negative");
-        return;
-      }
-      miliseconds.value =
-        $("#timeout").val() !== "" ? $("#timeout").val() : miliseconds.value;
-
-      $("p#success").text("Saved!");
-    } catch (e) {
-      $("p#success").text("");
-      $("#settings-error").text(e);
-    }
-  });
-});
-
-/**
- * Creates a div.array-container that containes all indices given
- * @private
- * @param {link tag} arr - original div.array-container
- * @param {number} from - start index
- * @param {number} to - end index (not included)
- * @returns {link tag} div.array-container extracted from original
- */
 function createSubArray(arr, from, to) {
   let $container = $("<div></div>").addClass("array-container");
   for (let i = from; i < to; i++) {
@@ -192,14 +100,6 @@ function animateDivision(half, dir) {
     }, timeout);
   });
 }
-
-/**
- * Animates the placement of a div.array-element over another one
- * @private
- * @param {link tag} element - div.array-element to be animated
- * @param {link tag} target - div.array-element that represents
- * final location for the first parameter
- */
 function animateMergeAlgorithmPlacement(element, target) {
   return new Promise((resolve) => {
     element.animate(
@@ -228,12 +128,6 @@ function animateMergeAlgorithmPlacement(element, target) {
   });
 }
 
-/**
- * Merges two sorted halves and replaces target array with the result
- * @param {link tag} arr1 - div.array-container representing first half of target
- * @param {link tag} arr2 - div.array-container representing second half of target
- * @param {link tag} target - div.array-container to be replaced by merged halves
- */
 async function merge(arr1, arr2, target) {
   let i1 = 0,
     i2 = 0,
@@ -264,10 +158,6 @@ async function merge(arr1, arr2, target) {
     );
 }
 
-/**
- * Executes and animates all the algorithm
- * @param {link tag} arr - div.array-container to be sorted and animated
- */
 async function sort(arr) {
   // Base case
   if (arr.childNodes.length <= 1) return;
