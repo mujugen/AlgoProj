@@ -62,6 +62,11 @@ $(document).ready(() => {
       return;
     }
     $("section.errors p").text("");
+    let inputArray = document.getElementById("arrayValues").value.split(",");
+    if (inputArray.length <= 1) {
+      inputArray = [2, 8, 1, 6, 3, 7, 5, 9];
+    }
+    $container = displayArray(inputArray);
     let $array = getArrayValue();
     sort($array[0]);
     sorted = true;
@@ -84,9 +89,7 @@ $(document).ready(() => {
   });
 });
 
-// Create default array
-const defaultArray = [2, 8, 1, 6, 3, 7, 5, 9];
-let $container = displayArray(defaultArray);
+let $container;
 let miliseconds = { value: 500 };
 
 function unsort(arr) {
