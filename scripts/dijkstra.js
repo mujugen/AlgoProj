@@ -72,6 +72,14 @@ svg
   .style("stroke", "none");
 
 const g = svg.append("g");
+const defaultZoom = 2;
+const translateX = -1200;
+const translateY = -150;
+
+g.attr(
+  "transform",
+  `translate(${translateX}, ${translateY}) scale(${defaultZoom})`
+);
 
 // Grid lines
 const xScale = d3
@@ -82,19 +90,6 @@ const yScale = d3
   .scaleLinear()
   .domain([-height / 2 / graphScale, height / 2 / graphScale])
   .range([height, 0]);
-
-// Zoom and drag
-svg.call(
-  d3.zoom().on("zoom", function (event) {
-    g.attr("transform", event.transform);
-  })
-);
-
-const zoom = d3.zoom().on("zoom", function (event) {
-  g.attr("transform", event.transform);
-});
-
-svg.call(zoom);
 
 // Run Dijkstra's Algorithm
 document
@@ -285,12 +280,12 @@ function importGraph() {
   if (serializedGraph) {
     const graph = JSON.parse(serializedGraph);
     nodes = [
-      { id: "a", x: 600, y: 500, color: "#999" },
-      { id: "b", x: 620, y: 480, color: "#999" },
-      { id: "c", x: 560, y: 460, color: "#999" },
-      { id: "d", x: 640, y: 440, color: "#999" },
-      { id: "e", x: 620, y: 400, color: "#999" },
-      { id: "f", x: 660, y: 360, color: "#999" },
+      { id: "a", x: 1080, y: 320, color: "#999" },
+      { id: "b", x: 1120, y: 280, color: "#999" },
+      { id: "c", x: 1060, y: 260, color: "#999" },
+      { id: "d", x: 1140, y: 240, color: "#999" },
+      { id: "e", x: 1100, y: 200, color: "#999" },
+      { id: "f", x: 1160, y: 160, color: "#999" },
     ];
 
     links = [
@@ -307,6 +302,6 @@ function importGraph() {
     console.warn("No graph data found in local storage.");
   }
 }
-
+importGraph();
 resizeSVG();
 window.addEventListener("resize", resizeSVG);
