@@ -23,14 +23,14 @@ function quicksortStep(inputArr, low, high) {
 }
 
 function highlightElement(index, color) {
-  const elements = document.querySelectorAll(".array-element");
+  const elements = document.getElementById("array-container").children;
   if (index >= 0 && index < elements.length) {
     const element = elements[index];
-    element.style.color = color;
+    element.style.backgroundColor = color;
 
     setTimeout(() => {
-      element.style.color = ""; // Reset the color to its original state
-    }, 500); // Remove the color after 500ms
+      element.style.backgroundColor = ""; // Reset background color after a delay
+    }, 500);
   }
 }
 
@@ -49,52 +49,50 @@ function nextStep() {
     }
     return;
   }
-
   const { low, high } = stack.pop();
+
   if (low < high) {
     updateStepDisplay(`Sorting from index ${low} to ${high}`);
-    const pivotIndex = partition(low, high);
-    stack.push({ low, high: pivotIndex - 1 });
-    stack.push({ low: pivotIndex + 1, high });
+    partition(low, high).then((pivotIndex) => {
+      stack.push({ low, high: pivotIndex - 1 });
+      stack.push({ low: pivotIndex + 1, high });
+      setTimeout(nextStep, 0); // Proceed to next step after async partitioning
+    });
   } else {
     isSorted = true;
     updateStepDisplay(`Partition from index ${low} to ${high} is sorted.`);
-    nextStep();
+    setTimeout(nextStep, 0);
   }
 }
 
 function partition(low, high) {
-  const pivot = arr[high];
-  let i = low - 1;
+  // Wrap the code in a new Promise
+  return new Promise((resolve) => {
+    const pivot = arr[high];
+    let i = low - 1;
 
-  for (let j = low; j < high; j++) {
-    if (arr[j] < pivot) {
-      i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-      if (i !== j) {
-        console.log(`Swapped ${arr[i]} and ${arr[j]}`);
-        highlightElement(
-          document.querySelectorAll(".array-element")[i],
-          "yellow"
-        ); // Highlight swapped elements
-        highlightElement(
-          document.querySelectorAll(".array-element")[j],
-          "yellow"
-        );
+    for (let j = low; j < high; j++) {
+      if (arr[j] < pivot) {
+        i++;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
     }
-  }
 
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  console.log(`Placed pivot element ${arr[i + 1]} in its correct position`);
-  highlightElement(document.querySelectorAll(".array-element")[i + 1], "green"); // Highlight pivot element
-  console.log(
-    `Comparing low (${low}) and high (${high}): Low is not less than High`
-  );
+    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+    highlightElement(high, "green"); // Highlight swapped elements
+    highlightElement(i + 1, "green");
+    console.log(`Placed pivot element ${arr[i + 1]} in its correct position`);
+    highlightElement(i + 1, "yellow"); // Highlight pivot element
+    console.log(
+      `Comparing low (${low}) and high (${high}): Low is not less than High`
+    );
 
-  updateArrayVisualization();
-
-  return i + 1;
+    // Use setTimeout to introduce the delay and resolve the promise after the delay
+    setTimeout(() => {
+      updateArrayVisualization();
+      resolve(i + 1); // resolve the promise with the pivot index
+    }, 2000);
+  });
 }
 
 function reset() {
@@ -103,7 +101,7 @@ function reset() {
 }
 
 // Example usage:
-const arrayToSort = [3, 6, 8, 10, 15, 2, 12];
+const arrayToSort = [3, 6, 8, 10, 15, 2, 12, 1, 4, 13];
 quicksortStep(arrayToSort, 0, arrayToSort.length - 1);
 
 function updateStepDisplay(stepText) {
