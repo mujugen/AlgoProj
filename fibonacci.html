@@ -29,6 +29,19 @@
         <h2 class="mt-4 font-weight-bold">Greedy Algorithm</h2>
         <ul class="nav flex-column">
           <li class="nav-item">
+            <a href="dijkstra.html">
+              <h3 class="font-weight-normal">Dijkstra's Algorithm</h3>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="knapsack.html">
+              <h3 class="font-weight-normal">Knapsack Problem</h3>
+            </a>
+          </li>
+        </ul>
+        <h2 class="mt-4 font-weight-bold">Dynamic Programming</h2>
+        <ul class="nav flex-column">
+          <li class="nav-item">
             <a href="fibonacci.html">
               <h3 class="font-weight-normal">Fibonacci Sequence</h3>
             </a>
@@ -39,24 +52,56 @@
             </a>
           </li>
         </ul>
-        <h2 class="mt-4 font-weight-bold">Dynamic Programming</h2>
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a href="Fibonacci.html">
-              <h3 class="font-weight-normal">Dijkstra's Algorithm</h3>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="knapsack.html">
-              <h3 class="font-weight-normal">Knapsack Problem</h3>
-            </a>
-          </li>
-        </ul>
       </div>
     </nav>
     <main>
-      <h1 class="justify-content-center align-items-center mt-5">Dijkstra</h1>
-      <div class="visualizer justify-content-center align-items-center"></div>
+      <h1 class="justify-content-center align-items-center mt-5">Merge Sort</h1>
+      <div
+        class="white-box align-self-center"
+        style="max-width: 1000px; width: 700px"
+      >
+        <div class="d-flex flex-row w-full mt-4">
+          <h3 style="flex: 3; align-self: center; text-align: left">
+            Array Values
+          </h3>
+          <input
+            style="flex: 7; height: 40px"
+            class="input-box"
+            type="text"
+            name="arrayValues"
+            id="arrayValues"
+            placeholder="2,8,1,6,3,7,5,9"
+          />
+        </div>
+        <div class="d-flex flex-row w-full mt-4">
+          <h3 style="flex: 3; align-self: center; text-align: left">
+            Animation Speed
+          </h3>
+          <div class="slidecontainer" style="flex: 7; height: 40px">
+            <input
+              type="range"
+              min="100"
+              max="300"
+              value="200"
+              class="slider"
+              id="timeoutSpeed"
+            />
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button id="sort" class="btn btn-primary">Sort</button>
+          <button id="unsort" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+
+      <div
+        class="visualizer justify-content-center align-items-center animation-zone-parent"
+      >
+        <section class="animation-zone"></section>
+      </div>
     </main>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="scripts/fibonacci.js"></script>
   </body>
 </html>
