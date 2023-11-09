@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/bootstrap.min.css" />
     <link rel="stylesheet" href="./styles/styles.css" />
-    <title>Knapsack</title>
+    <link
+      href="https://unpkg.com/vis-network/styles/vis-network.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <title>Prim's Algorithm</title>
   </head>
   <body>
     <nav class="sidebar">
@@ -56,9 +63,67 @@
     </nav>
     <main>
       <h1 class="justify-content-center align-items-center mt-5">
-        Prim's Algorithm
+        Prim's Algorithm Visualizer
       </h1>
-      <div class="visualizer justify-content-center align-items-center"></div>
+      <div
+        class="d-flex flex-row justify-content-center"
+        style="margin-left: 0; width: 100%"
+      >
+        <div
+          class="white-box align-self-center"
+          style="flex: 50; width: 100%; margin-left: 0"
+        >
+          <div class="d-flex flex-row w-full mt-4">
+            <h3 style="flex: 3; align-self: center; text-align: left">
+              Start Node
+            </h3>
+            <input
+              style="flex: 7; height: 40px"
+              class="input-box"
+              type="text"
+              name="arrayValues"
+              id="startNodeInput"
+              placeholder="a,b,c,d,e,f"
+            />
+          </div>
+          <div class="d-flex flex-row w-full mt-4">
+            <h3 style="flex: 3; align-self: center; text-align: left">
+              End Node
+            </h3>
+            <input
+              style="flex: 7; height: 40px"
+              class="input-box"
+              type="text"
+              name="arrayValues"
+              id="endNodeInput"
+              placeholder="a,b,c,d,e,f"
+            />
+          </div>
+
+          <div class="mt-4">
+            <button id="runDijkstraBtn" onclick="run()" class="btn btn-primary">
+              Run
+            </button>
+          </div>
+        </div>
+        <div
+          class="white-box align-self-center align-self-stretch"
+          style="flex: 50; width: 100%; margin-right: 0"
+        >
+          <div
+            id="step-display"
+            style="overflow-y: auto; max-height: 180px"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="visualizer justify-content-center align-items-center animation-zone-parent"
+      >
+        <div id="graph"></div>
+      </div>
     </main>
+
+    <script src="scripts/prims.js"></script>
   </body>
 </html>
