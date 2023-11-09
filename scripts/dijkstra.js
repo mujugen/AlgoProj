@@ -93,6 +93,7 @@ const yScale = d3
 
 // Run Dijkstra's Algorithm
 async function runDijkstra() {
+  resetGraphColoring();
   removeAllStepDisplayElements();
   const source = document.getElementById("startNodeInput").value.toLowerCase();
   const destination = document
