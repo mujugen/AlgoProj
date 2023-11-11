@@ -1,14 +1,9 @@
 let currentStep = 0;
 let steps = [];
 let arrowData = [];
-
-function run() {
+let memo = {};
+function initialize(n) {
   let traceZone = document.getElementById("traceZone");
-  let inputBox = document.getElementById("inputBox");
-  let n = 6;
-  if (inputBox.value) {
-    n = inputBox.value;
-  }
 
   traceZone.style.position = "relative";
 
@@ -76,7 +71,8 @@ function fibonacci(n, parentElement, level, svg) {
         to: childrenContainer.lastChild.firstChild,
         svg,
       });
-
+      console.log(leftVal);
+      memo[n] = leftVal + rightVal;
       return leftVal + rightVal;
     });
   }
@@ -110,16 +106,83 @@ function drawArrow(from, to, parentSvg) {
 
   parentSvg.appendChild(line);
 }
-function nextStep() {
+function nextStep(n) {
   if (currentStep < steps.length) {
     steps[currentStep++]();
     drawArrows(); // Redraw arrows after each step
+    return false;
   } else {
-    alert("No more steps!");
+    let fib = dynamicFibonacci(n);
+    let timeout = 500 - document.getElementById("timeoutSpeed").value;
+    // Function to process each Fibonacci number with delay
+    function processFibNumber(i) {
+      if (i < fib.length) {
+        let currentText = `fib(${i})`;
+        let targetText = fib[i];
+        replaceElementText(currentText, targetText);
+        drawArrows();
+
+        // Schedule the next Fibonacci number processing
+        setTimeout(() => processFibNumber(i + 1), timeout * 2);
+      }
+    }
+
+    // Start processing the first Fibonacci number
+    processFibNumber(0);
+    return true;
   }
 }
+
 function clearSVG(svg) {
   while (svg.firstChild) {
     svg.removeChild(svg.firstChild);
+  }
+}
+
+function run() {
+  let inputBox = document.getElementById("inputBox");
+  let n = 5;
+  if (inputBox.value) {
+    n = inputBox.value;
+  }
+  counter = 1;
+  let timeout = 500 - document.getElementById("timeoutSpeed").value;
+  initialize(n);
+  const interval = setInterval(() => {
+    const isFinished = nextStep(n);
+    if (isFinished) {
+      clearInterval(interval); // Stop the interval when the algorithm is finished
+    }
+
+    counter++;
+  }, timeout);
+}
+
+function dynamicFibonacci(n) {
+  // Initialize an array to store Fibonacci numbers
+  let fib = [0, 1];
+
+  // Calculate Fibonacci numbers and store them in the array
+  for (let i = 2; i <= n; i++) {
+    fib[i] = fib[i - 1] + fib[i - 2];
+  }
+
+  // Return the nth Fibonacci number
+  return fib;
+}
+
+function replaceElementText(searchText, replaceText) {
+  // Get all elements with the specified class name
+  var elements = document.getElementsByClassName("array-element2");
+
+  // Loop through the elements
+  for (var i = 0; i < elements.length; i++) {
+    // Check if the innerText matches the search text
+    if (elements[i].innerText === searchText) {
+      // Replace the innerText with the specified replace text
+      elements[i].innerText = replaceText;
+      elements[i].style.backgroundColor = "#4287f5";
+      elements[i].style.minWidth = "60px";
+    }
   }
 }
