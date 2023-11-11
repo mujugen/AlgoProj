@@ -15,6 +15,11 @@ function run() {
   traceZone.appendChild(svg);
 
   fibonacci(n, traceZone, 0, svg);
+  if (traceZone.offsetWidth > 2000) {
+    traceZone.style.marginLeft = `${
+      1071.43 * (n * n) - 14885.71 * n + 52642.86
+    }px`;
+  }
 }
 function fibonacci(n, parentElement, level, svg) {
   let callContainer = document.createElement("div");
