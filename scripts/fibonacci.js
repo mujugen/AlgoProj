@@ -1,11 +1,15 @@
+let currentStep = 0;
+let steps = [];
+let arrowData = [];
+
 function run() {
   let traceZone = document.getElementById("traceZone");
   let inputBox = document.getElementById("inputBox");
-  if (!inputBox.value) {
-    alert("Insert input.");
-    return;
+  let n = 6;
+  if (inputBox.value) {
+    n = inputBox.value;
   }
-  let n = inputBox.value;
+
   traceZone.style.position = "relative";
 
   traceZone.innerHTML = "";
@@ -42,27 +46,47 @@ function fibonacci(n, parentElement, level, svg) {
   parentElement.appendChild(callContainer);
 
   if (n <= 1) {
-    return n;
+    steps.push(() => n);
   } else {
-    let childrenContainer = document.createElement("div");
-    childrenContainer.style.display = "flex";
-    childrenContainer.style.justifyContent = "center";
+    steps.push(() => {
+      let childrenContainer = document.createElement("div");
+      childrenContainer.style.display = "flex";
+      childrenContainer.style.justifyContent = "center";
 
-    childrenContainer.style.gap = `${level}px`;
+      childrenContainer.style.gap = `${level}px`;
 
-    let leftVal = fibonacci(n - 1, childrenContainer, level + 1, svg);
-    let rightVal = fibonacci(n - 2, childrenContainer, level + 1, svg);
+      let leftVal = fibonacci(n - 1, childrenContainer, level + 1, svg);
+      let rightVal = fibonacci(n - 2, childrenContainer, level + 1, svg);
 
-    if (childrenContainer.hasChildNodes()) {
-      callContainer.appendChild(childrenContainer);
+      if (childrenContainer.hasChildNodes()) {
+        callContainer.appendChild(childrenContainer);
 
-      requestAnimationFrame(() => {
-        drawArrow(callLabel, childrenContainer.firstChild.firstChild, svg);
-        drawArrow(callLabel, childrenContainer.lastChild.firstChild, svg);
+        requestAnimationFrame(() => {
+          drawArrow(callLabel, childrenContainer.firstChild.firstChild, svg);
+          drawArrow(callLabel, childrenContainer.lastChild.firstChild, svg);
+        });
+      }
+      arrowData.push({
+        from: callLabel,
+        to: childrenContainer.firstChild.firstChild,
+        svg,
       });
-    }
+      arrowData.push({
+        from: callLabel,
+        to: childrenContainer.lastChild.firstChild,
+        svg,
+      });
 
-    return leftVal + rightVal;
+      return leftVal + rightVal;
+    });
+  }
+}
+function drawArrows() {
+  if (arrowData.length > 0) {
+    clearSVG(arrowData[0].svg); // Assuming all arrows are in the same SVG
+    arrowData.forEach(({ from, to, svg }) => {
+      drawArrow(from, to, svg);
+    });
   }
 }
 function drawArrow(from, to, parentSvg) {
@@ -85,4 +109,17 @@ function drawArrow(from, to, parentSvg) {
   line.style.strokeWidth = "2";
 
   parentSvg.appendChild(line);
+}
+function nextStep() {
+  if (currentStep < steps.length) {
+    steps[currentStep++]();
+    drawArrows(); // Redraw arrows after each step
+  } else {
+    alert("No more steps!");
+  }
+}
+function clearSVG(svg) {
+  while (svg.firstChild) {
+    svg.removeChild(svg.firstChild);
+  }
 }
