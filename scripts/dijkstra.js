@@ -21,7 +21,14 @@ function resizeSVG() {
   // Update scales, axes, or any other elements based on new size
   xScale.range([0, width]);
   yScale.range([height, 0]);
-  // You might need to update other elements and re-render the graph here
+
+  const offsetX = Math.log(Math.max(visualizer.offsetWidth, 1));
+  const scaleFactor = 500; // Adjust this factor to scale the result
+  const adjustedOffsetX = scaleFactor * offsetX;
+  g.attr(
+    "transform",
+    `translate(${-5500 + adjustedOffsetX}, ${translateY}) scale(${defaultZoom})`
+  );
 }
 
 // Translate coordinate system to make (0,0) at the center of SVG
