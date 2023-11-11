@@ -70,7 +70,7 @@
         style="margin-left: 0; width: 100%"
       >
         <div
-          class="white-box align-self-center"
+          class="white-box align-self-stretch"
           style="flex: 50; width: 100%; margin-left: 0"
         >
           <div class="d-flex flex-row w-full mt-4">
@@ -80,21 +80,17 @@
             <div class="slidecontainer" style="flex: 7; height: 40px">
               <input
                 type="range"
-                min="100"
-                max="300"
-                value="200"
+                min="200"
+                max="1200"
+                value="800"
                 class="slider"
                 id="timeoutSpeed"
               />
             </div>
           </div>
 
-          <div class="mt-4">
-            <button
-              id="runDijkstraBtn"
-              onclick="nextStep()"
-              class="btn btn-primary"
-            >
+          <div class="mt-4" style="padding-bottom: 30px; padding-top: 30px">
+            <button id="runDijkstraBtn" onclick="run()" class="btn btn-primary">
               Run
             </button>
           </div>

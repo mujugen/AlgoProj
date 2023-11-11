@@ -1,7 +1,7 @@
 let nodes = [];
 let links = [];
 let nodeCount = 0;
-
+let counter = 1;
 const nodeRadius = 5;
 const graphScale = 20;
 const defaultZoom = 2.5;
@@ -9,7 +9,6 @@ const translateX = -1700;
 const translateY = -250;
 let width;
 let height;
-
 class MinPriorityQueue {
   constructor() {
     this.queue = [];
@@ -128,10 +127,7 @@ const yScale = d3
   .range([height, 0]);
 
 // Run Dijkstra's Algorithm
-async function run() {
-  resetGraphColoring();
-  removeAllStepDisplayElements();
-
+async function finish() {
   // Run Prim's algorithm
   const mstLinks = await prim(nodes, links);
   resetGraphColoring();
@@ -165,10 +161,12 @@ function initializePrim() {
 }
 function nextStep() {
   if (added.size >= nodes.length) {
-    alert("Minimum Spanning Tree is complete!");
-    return;
+    finish();
+    updateStepDisplay("Minimum Spanning Tree is complete!");
+    return true;
   }
 
+  updateStepDisplay(`Pass #${counter}`);
   links
     .filter(
       (link) =>
@@ -177,17 +175,23 @@ function nextStep() {
     )
     .forEach((link) => {
       edgeQueue.enqueue(link, parseFloat(link.weight));
+      updateStepDisplay(
+        `Considering edge ${link.source}-${link.target} with weight ${link.weight}`
+      );
     });
 
   let smallestEdge;
   do {
     if (edgeQueue.isEmpty()) {
-      alert(
+      updateStepDisplay(
         "No more edges to process. Minimum Spanning Tree may not be complete."
       );
       return;
     }
     smallestEdge = edgeQueue.dequeue();
+    updateStepDisplay(
+      `Edge ${smallestEdge.source}-${smallestEdge.target} with weight ${smallestEdge.weight} is the optimal edge`
+    );
   } while (added.has(smallestEdge.source) && added.has(smallestEdge.target));
 
   mstLinks.push(smallestEdge);
@@ -198,7 +202,7 @@ function nextStep() {
 
   updateGraphForPrim(smallestEdge, newNode);
   updateStepDisplay(
-    `Added edge: ${smallestEdge.source}-${smallestEdge.target}`
+    `Added edge ${smallestEdge.source}-${smallestEdge.target} to MST`
   );
 }
 
@@ -245,29 +249,33 @@ function updateGraph() {
   // Node handling
   const nodeElements = g.selectAll(".node").data(nodes, (d) => d.id);
 
-  nodeElements
-    .enter()
-    .append("circle")
-    .attr("r", nodeRadius)
-    .attr("class", "node")
-    .merge(nodeElements)
-    .attr("cx", (d) => d.x)
-    .attr("cy", (d) => d.y)
-    .attr("fill", (d) => d.color || "blue");
+  // Enter new nodes
+  const nodeEnter = nodeElements.enter().append("g").attr("class", "node");
 
-  nodeElements.exit().remove();
+  // Add circles for new nodes
+  nodeEnter.append("circle").attr("r", nodeRadius).attr("fill", "#3266a8");
 
-  // Node text handling
-  const nodeUpdate = nodeElements.enter().append("g").attr("class", "node");
-  nodeUpdate
+  // Add labels for new nodes
+  nodeEnter
     .append("text")
-    .attr("dx", 12)
+    .attr("dx", 12) // Adjust text position relative to the circle
     .attr("dy", ".35em")
-    .text((d) => d.id)
-    .merge(nodeElements.select("text"))
-    .attr("x", (d) => d.x)
-    .attr("y", (d) => d.y);
+    .text((d) => d.id);
 
+  // Update existing nodes
+  const nodeUpdate = nodeEnter.merge(nodeElements);
+  nodeUpdate
+    .select("circle")
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y);
+
+  nodeUpdate
+    .select("text")
+    .attr("x", (d) => d.x) // Adjust text position relative to the circle
+    .attr("y", (d) => d.y)
+    .text((d) => d.id);
+
+  // Remove old nodes
   nodeElements.exit().remove();
 
   // Link text handling
@@ -296,8 +304,6 @@ function updateGraph() {
 
 function prim(nodes, links) {
   return new Promise((resolve) => {
-    updateStepDisplay("Running Prim's algorithm...");
-
     const mstLinks = [];
     const edgeQueue = new MinPriorityQueue(); // Assuming a MinPriorityQueue implementation
     const added = new Set();
@@ -319,7 +325,7 @@ function prim(nodes, links) {
       do {
         if (edgeQueue.isEmpty()) {
           resolve(mstLinks); // Resolve with the current mstLinks if no more edges are available
-          return;
+          return true;
         }
         smallestEdge = edgeQueue.dequeue();
       } while (
@@ -339,6 +345,7 @@ function prim(nodes, links) {
 
     resolve(mstLinks);
   });
+  return false;
 }
 
 function updateGraphForPrim(link, newNode) {
@@ -450,3 +457,17 @@ importGraph();
 resizeSVG();
 window.addEventListener("resize", resizeSVG);
 initializePrim();
+
+function run() {
+  counter = 1;
+  let timeout = 1300 - document.getElementById("timeoutSpeed").value;
+
+  const interval = setInterval(() => {
+    const isFinished = nextStep();
+    if (isFinished) {
+      clearInterval(interval); // Stop the interval when the algorithm is finished
+    }
+
+    counter++;
+  }, timeout);
+}
