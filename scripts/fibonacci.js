@@ -1,7 +1,6 @@
 let currentStep = 0;
 let steps = [];
 let arrowData = [];
-let memo = {};
 function initialize(n) {
   let traceZone = document.getElementById("traceZone");
 
@@ -71,8 +70,6 @@ function fibonacci(n, parentElement, level, svg) {
         to: childrenContainer.lastChild.firstChild,
         svg,
       });
-      console.log(leftVal);
-      memo[n] = leftVal + rightVal;
       return leftVal + rightVal;
     });
   }
@@ -120,6 +117,7 @@ function nextStep(n) {
         let currentText = `fib(${i})`;
         let targetText = fib[i];
         replaceElementText(currentText, targetText);
+        //update memory in step-display here
         drawArrows();
 
         // Schedule the next Fibonacci number processing
