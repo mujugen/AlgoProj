@@ -55,7 +55,9 @@
       </div>
     </nav>
     <main>
-      <h1 class="justify-content-center align-items-center mt-5">Merge Sort</h1>
+      <h1 class="justify-content-center align-items-center mt-5">
+        Fibonacci Sequence
+      </h1>
       <div
         class="white-box align-self-center"
         style="max-width: 1000px; width: 700px"
@@ -90,15 +92,22 @@
         </div>
 
         <div class="mt-4">
-          <button id="sort" class="btn btn-primary">Sort</button>
-          <button id="unsort" class="btn btn-secondary">Reset</button>
+          <button id="run" class="btn btn-primary" onclick="run()">Run</button>
         </div>
       </div>
 
       <div
         class="visualizer justify-content-center align-items-center animation-zone-parent"
       >
-        <section class="animation-zone"></section>
+        <section
+          class="animation-zone f-flex flex-row"
+          style="justify-content: space-evenly"
+        >
+          <div
+            id="traceZone"
+            style="display: flex; flex-direction: column; align-items: center"
+          ></div>
+        </section>
       </div>
     </main>
     <script src="vendor/jquery/jquery.min.js"></script>

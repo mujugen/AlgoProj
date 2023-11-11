@@ -142,7 +142,7 @@ section.animation-zone div.array-container div.array-element {
   width: 40px;
   margin: 0 1px 0 1px;
   background: #ffffff;
-  border: 2px solid #949494;
+  border: 3px solid #949494;
   border-radius: 10px;
   text-align: center;
   font-weight: bold;
@@ -168,7 +168,7 @@ section.animation-zone div.array-container div.array-element p {
   align-items: center;
   width: 100px;
   height: 100px;
-  border: 1px solid #000;
+  border: 2px solid #000;
   transition: all 0.1s; /* Add transition for smooth color change */
 }
 
@@ -207,4 +207,17 @@ section.animation-zone div.array-container div.array-element p {
   stroke: lightgrey;
   stroke-width: 0;
   shape-rendering: crispEdges;
+}
+
+.array-element2 {
+  background: #ffffff;
+  border: 3px solid #949494;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  color: #181818;
+  transition: all 0.1s;
+  justify-content: center;
+  align-content: center;
+  padding: 10px;
 }
