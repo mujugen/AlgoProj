@@ -16,7 +16,7 @@ function initialize(n) {
   svg.style.height = "100%";
   svg.style.pointerEvents = "none";
   traceZone.appendChild(svg);
-
+  createMemoryTable(n);
   fibonacci(n, traceZone, 0, svg);
   if (traceZone.offsetWidth > 2000) {
     traceZone.style.marginLeft = `${
@@ -117,7 +117,8 @@ function nextStep(n) {
         let currentText = `fib(${i})`;
         let targetText = fib[i];
         replaceElementText(currentText, targetText);
-        //update memory in step-display here
+        updateMemoryTable(i, fib[i]);
+
         drawArrows();
 
         // Schedule the next Fibonacci number processing
@@ -181,6 +182,55 @@ function replaceElementText(searchText, replaceText) {
       elements[i].innerText = replaceText;
       elements[i].style.backgroundColor = "#4287f5";
       elements[i].style.minWidth = "60px";
+      elements[i].style.border = "3px solid #4287f5";
     }
+  }
+}
+function createMemoryTable(n) {
+  let table = document.createElement("table");
+  table.style.width = "100%"; // Set table width to 100% of its parent
+  table.style.borderCollapse = "collapse"; // Optional, for better aesthetics
+
+  // Create header row
+  let header = table.createTHead();
+  let headerRow = header.insertRow(0);
+  let headerCell1 = headerRow.insertCell(0);
+  let headerCell2 = headerRow.insertCell(1);
+  headerCell1.innerHTML = "Function";
+  headerCell2.innerHTML = "Memory";
+
+  // Style header cells for even spacing and aesthetics
+  headerCell1.style.width = "50%";
+  headerCell2.style.width = "50%";
+  headerCell1.style.textAlign = "center";
+  headerCell2.style.textAlign = "center";
+  headerCell1.style.fontSize = "20px";
+  headerCell1.style.fontWeight = "bold";
+  headerCell2.style.fontSize = "20px";
+  headerCell2.style.fontWeight = "bold";
+
+  // Create rows for Fibonacci numbers
+  for (let i = 0; i <= n; i++) {
+    let row = table.insertRow(-1);
+    let cell1 = row.insertCell(0);
+    let cell2 = row.insertCell(1);
+    cell1.innerHTML = `fib(${i})`;
+    cell2.innerHTML = "Pending";
+    cell2.id = `fib-value-${i}`;
+
+    // Style cells for even spacing and aesthetics
+    cell1.style.width = "50%";
+    cell2.style.width = "50%";
+    cell1.style.textAlign = "center";
+    cell2.style.textAlign = "center";
+  }
+
+  document.getElementById("step-display").appendChild(table);
+}
+
+function updateMemoryTable(index, value) {
+  let cell = document.getElementById(`fib-value-${index}`);
+  if (cell) {
+    cell.innerHTML = value;
   }
 }
