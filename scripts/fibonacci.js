@@ -1,6 +1,11 @@
 function run() {
-  let n = 6;
   let traceZone = document.getElementById("traceZone");
+  let inputBox = document.getElementById("inputBox");
+  if (!inputBox.value) {
+    alert("Insert input.");
+    return;
+  }
+  let n = inputBox.value;
   traceZone.style.position = "relative";
 
   traceZone.innerHTML = "";
