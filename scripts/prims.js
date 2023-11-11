@@ -9,6 +9,52 @@ const translateX = -1700;
 const translateY = -250;
 let width;
 let height;
+
+class MinPriorityQueue {
+  constructor() {
+    this.queue = [];
+  }
+
+  enqueue(element, priority) {
+    // Creating an object with the element and its priority
+    const queueElement = { element, priority };
+    let added = false;
+
+    for (let i = 0; i < this.queue.length; i++) {
+      if (queueElement.priority < this.queue[i].priority) {
+        // Inserting the element at the correct position
+        this.queue.splice(i, 0, queueElement);
+        added = true;
+        break;
+      }
+    }
+
+    // If the element has the highest priority, it is pushed to the end of the array
+    if (!added) {
+      this.queue.push(queueElement);
+    }
+  }
+
+  dequeue() {
+    // Removing the element with the highest priority (lowest number) from the start of the array
+    return this.queue.shift().element;
+  }
+
+  isEmpty() {
+    // Checking if the queue is empty
+    return this.queue.length === 0;
+  }
+
+  // Optionally, you can add a method to view the top element without removing it
+  peek() {
+    return this.queue.length > 0 ? this.queue[0].element : undefined;
+  }
+}
+
+let mstLinks = [];
+let edgeQueue = new MinPriorityQueue();
+let added = new Set();
+
 function resizeSVG() {
   // Use the size of the visualizer container
   const visualizer = document.querySelector(".visualizer");
@@ -107,6 +153,55 @@ async function run() {
 
   updateGraph();
 }
+
+function initializePrim() {
+  mstLinks = [];
+  edgeQueue = new MinPriorityQueue();
+  added = new Set();
+  added.add(nodes[0].id); // Assuming the first node is the starting node
+
+  updateStepDisplay("Initialized Prim's algorithm");
+  updateGraph();
+}
+function nextStep() {
+  if (added.size >= nodes.length) {
+    alert("Minimum Spanning Tree is complete!");
+    return;
+  }
+
+  links
+    .filter(
+      (link) =>
+        (added.has(link.source) && !added.has(link.target)) ||
+        (added.has(link.target) && !added.has(link.source))
+    )
+    .forEach((link) => {
+      edgeQueue.enqueue(link, parseFloat(link.weight));
+    });
+
+  let smallestEdge;
+  do {
+    if (edgeQueue.isEmpty()) {
+      alert(
+        "No more edges to process. Minimum Spanning Tree may not be complete."
+      );
+      return;
+    }
+    smallestEdge = edgeQueue.dequeue();
+  } while (added.has(smallestEdge.source) && added.has(smallestEdge.target));
+
+  mstLinks.push(smallestEdge);
+  const newNode = added.has(smallestEdge.source)
+    ? smallestEdge.target
+    : smallestEdge.source;
+  added.add(newNode);
+
+  updateGraphForPrim(smallestEdge, newNode);
+  updateStepDisplay(
+    `Added edge: ${smallestEdge.source}-${smallestEdge.target}`
+  );
+}
+
 function updateGraph() {
   // Link handling
   const linkElements = g
@@ -197,47 +292,6 @@ function updateGraph() {
     .text((d) => d.weight);
 
   textElements.exit().remove();
-}
-
-class MinPriorityQueue {
-  constructor() {
-    this.queue = [];
-  }
-
-  enqueue(element, priority) {
-    // Creating an object with the element and its priority
-    const queueElement = { element, priority };
-    let added = false;
-
-    for (let i = 0; i < this.queue.length; i++) {
-      if (queueElement.priority < this.queue[i].priority) {
-        // Inserting the element at the correct position
-        this.queue.splice(i, 0, queueElement);
-        added = true;
-        break;
-      }
-    }
-
-    // If the element has the highest priority, it is pushed to the end of the array
-    if (!added) {
-      this.queue.push(queueElement);
-    }
-  }
-
-  dequeue() {
-    // Removing the element with the highest priority (lowest number) from the start of the array
-    return this.queue.shift().element;
-  }
-
-  isEmpty() {
-    // Checking if the queue is empty
-    return this.queue.length === 0;
-  }
-
-  // Optionally, you can add a method to view the top element without removing it
-  peek() {
-    return this.queue.length > 0 ? this.queue[0].element : undefined;
-  }
 }
 
 function prim(nodes, links) {
@@ -395,3 +449,4 @@ function resetGraphColoring() {
 importGraph();
 resizeSVG();
 window.addEventListener("resize", resizeSVG);
+initializePrim();
