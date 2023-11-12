@@ -121,8 +121,12 @@ function nextStep(n, price) {
 
     function processCutRod(i) {
       if (i < n + 1) {
-        let currentText = `${i}:${price[i]}`;
-        let targetText = `hello`;
+        let currentText = `${i}:${price[i - 1]}`;
+        if (i == 0) {
+          currentText = `0:0`;
+        }
+        console.log(currentText);
+        let targetText = `${val[i]}`;
         replaceElementText(currentText, targetText);
         updateMemoryTable(i, val[i]);
 
@@ -185,19 +189,32 @@ function dynamicCutRod(n, price) {
 function replaceElementText(searchText, replaceText) {
   // Get all elements with the specified class name
   var elements = document.getElementsByClassName("array-element2");
+  console.log(elements);
 
   // Loop through the elements
   for (var i = 0; i < elements.length; i++) {
     // Check if the innerText matches the search text
     if (elements[i].innerText === searchText) {
-      // Replace the innerText with the specified replace text
-      elements[i].innerText = replaceText;
+      // Get the adjacent sibling element
+      var adjacentElement = elements[i].nextElementSibling;
+
+      // Check if there is an adjacent element
+      if (adjacentElement) {
+        // Remove the adjacent element
+        adjacentElement.parentNode.removeChild(adjacentElement);
+      }
+
+      // Set the text content of the current element to the replace text
+      elements[i].textContent = replaceText;
+
+      // Apply any other styling or modifications you want
       elements[i].style.backgroundColor = "#4287f5";
       elements[i].style.minWidth = "60px";
       elements[i].style.border = "3px solid #4287f5";
     }
   }
 }
+
 function createMemoryTable(n, price) {
   let table = document.createElement("table");
   table.style.width = "100%"; // Set table width to 100% of its parent
