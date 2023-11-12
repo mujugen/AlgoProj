@@ -1,7 +1,8 @@
 let currentStep = 0;
 let steps = [];
 let arrowData = [];
-function initialize(n) {
+let originalLength;
+function initialize(n, price) {
   let traceZone = document.getElementById("traceZone");
 
   traceZone.style.position = "relative";
@@ -16,30 +17,30 @@ function initialize(n) {
   svg.style.height = "100%";
   svg.style.pointerEvents = "none";
   traceZone.appendChild(svg);
-  createMemoryTable(n);
-  fibonacci(n, traceZone, 0, svg);
+  createMemoryTable(n, price);
+  cutRod(n, traceZone, 0, svg, price);
   if (traceZone.offsetWidth > 2000) {
     traceZone.style.marginLeft = `${
       1071.43 * (n * n) - 14885.71 * n + 52642.86
     }px`;
   }
 }
-function fibonacci(n, parentElement, level, svg) {
+function cutRod(n, parentElement, level, svg, price) {
   let callContainer = document.createElement("div");
   callContainer.style.display = "flex";
   callContainer.style.flexDirection = "column";
   callContainer.style.alignItems = "center";
   callContainer.style.margin = `${level * 2}px`;
-
   let callLabel = document.createElement("div");
-  callLabel.textContent = `fib(${n})`;
+  callLabel.textContent = `${n}:${price[n]}`;
+
   callLabel.className = "array-element2";
   callLabel.style.margin = `10px`;
   callContainer.appendChild(callLabel);
 
   parentElement.appendChild(callContainer);
 
-  if (n <= 1) {
+  if (n <= 0) {
     steps.push(() => n);
   } else {
     steps.push(() => {
@@ -50,8 +51,8 @@ function fibonacci(n, parentElement, level, svg) {
 
       let childValues = [];
 
-      for (let i = n - 1; i >= 1; i--) {
-        let childVal = fibonacci(i, childrenContainer, level + 1, svg);
+      for (let i = n - 1; i >= 0; i--) {
+        let childVal = cutRod(i, childrenContainer, level + 1, svg, price);
         childValues.push(childVal);
       }
 
@@ -108,29 +109,30 @@ function drawArrow(from, to, parentSvg) {
   });
 }
 
-function nextStep(n) {
+function nextStep(n, price) {
   if (currentStep < steps.length) {
     steps[currentStep++]();
     drawArrows(); // Redraw arrows after each step
     return false;
   } else {
-    /* let fib = dynamicFibonacci(n);
+    let val = dynamicCutRod(n, price);
+    console.log(val);
     let timeout = 500 - document.getElementById("timeoutSpeed").value;
 
-    function processFibNumber(i) {
-      if (i < fib.length) {
-        let currentText = `fib(${i})`;
-        let targetText = fib[i];
+    function processCutRod(i) {
+      if (i < n + 1) {
+        let currentText = `${i}:${price[i]}`;
+        let targetText = `hello`;
         replaceElementText(currentText, targetText);
-        updateMemoryTable(i, fib[i]);
+        updateMemoryTable(i, val[i]);
 
         drawArrows();
 
-        setTimeout(() => processFibNumber(i + 1), timeout * 2);
+        setTimeout(() => processCutRod(i + 1), timeout * 2);
       }
     }
 
-    processFibNumber(0); */
+    processCutRod(0);
     return true;
   }
 }
@@ -144,15 +146,16 @@ function clearSVG(svg) {
 function run() {
   reset();
   let inputBox = document.getElementById("inputBox");
-  let n = 5;
-  if (inputBox.value) {
-    n = inputBox.value;
-  }
+
+  let price = [0, 2, 5, 9, 10, 12];
+  let n = price.length - 1;
+  originalLength = n;
+
   counter = 1;
   let timeout = 500 - document.getElementById("timeoutSpeed").value;
-  initialize(n);
+  initialize(n, price);
   const interval = setInterval(() => {
-    const isFinished = nextStep(n);
+    const isFinished = nextStep(n, price);
     if (isFinished) {
       clearInterval(interval); // Stop the interval when the algorithm is finished
     }
@@ -161,17 +164,22 @@ function run() {
   }, timeout);
 }
 
-function dynamicFibonacci(n) {
-  // Initialize an array to store Fibonacci numbers
-  let fib = [0, 1];
+function dynamicCutRod(n, price) {
+  price.shift();
+  let val = new Array(n + 1);
+  val[0] = 0;
 
-  // Calculate Fibonacci numbers and store them in the array
-  for (let i = 2; i <= n; i++) {
-    fib[i] = fib[i - 1] + fib[i - 2];
+  // Build the table val[] in
+  // bottom up manner and return
+  // the last entry from the table
+  for (let i = 1; i <= n; i++) {
+    let max_val = Number.MIN_VALUE;
+    for (let j = 0; j < i; j++)
+      max_val = Math.max(max_val, price[j] + val[i - j - 1]);
+    val[i] = max_val;
   }
 
-  // Return the nth Fibonacci number
-  return fib;
+  return val;
 }
 
 function replaceElementText(searchText, replaceText) {
@@ -190,7 +198,7 @@ function replaceElementText(searchText, replaceText) {
     }
   }
 }
-function createMemoryTable(n) {
+function createMemoryTable(n, price) {
   let table = document.createElement("table");
   table.style.width = "100%"; // Set table width to 100% of its parent
   table.style.borderCollapse = "collapse"; // Optional, for better aesthetics
@@ -201,7 +209,7 @@ function createMemoryTable(n) {
   let headerCell1 = headerRow.insertCell(0);
   let headerCell2 = headerRow.insertCell(1);
   headerCell1.innerHTML = "Function";
-  headerCell2.innerHTML = "Memory";
+  headerCell2.innerHTML = "Max Value";
 
   // Style header cells for even spacing and aesthetics
   headerCell1.style.width = "50%";
@@ -218,9 +226,9 @@ function createMemoryTable(n) {
     let row = table.insertRow(-1);
     let cell1 = row.insertCell(0);
     let cell2 = row.insertCell(1);
-    cell1.innerHTML = `fib(${i})`;
+    cell1.innerHTML = `r(${i})`;
     cell2.innerHTML = "Pending";
-    cell2.id = `fib-value-${i}`;
+    cell2.id = `cutValue-${i}`;
 
     // Style cells for even spacing and aesthetics
     cell1.style.width = "50%";
@@ -233,7 +241,7 @@ function createMemoryTable(n) {
 }
 
 function updateMemoryTable(index, value) {
-  let cell = document.getElementById(`fib-value-${index}`);
+  let cell = document.getElementById(`cutValue-${index}`);
   if (cell) {
     cell.innerHTML = value;
   }
