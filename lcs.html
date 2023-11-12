@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./styles/bootstrap.min.css" />
     <link rel="stylesheet" href="./styles/styles.css" />
-    <title>Longest Common Subsequence</title>
+    <title>Fibonacci</title>
   </head>
   <body>
     <nav class="sidebar">
@@ -56,9 +56,78 @@
     </nav>
     <main>
       <h1 class="justify-content-center align-items-center mt-5">
-        Longest Common Subsequence
+        Fibonacci Sequence
       </h1>
-      <div class="visualizer justify-content-center align-items-center"></div>
+      <div
+        class="d-flex flex-row justify-content-center"
+        style="margin-left: 0; width: 100%"
+      >
+        <div
+          class="white-box align-self-center"
+          style="flex: 50; width: 100%; margin-left: 0"
+        >
+          <div class="d-flex flex-row w-full mt-4">
+            <h3 style="flex: 3; align-self: center; text-align: left">
+              Fibonacci Number
+            </h3>
+            <input
+              style="flex: 7; height: 40px"
+              class="input-box"
+              type="text"
+              name="inputBox"
+              id="inputBox"
+              placeholder="5"
+            />
+          </div>
+          <div class="d-flex flex-row w-full mt-4">
+            <h3 style="flex: 3; align-self: center; text-align: left">
+              Animation Speed
+            </h3>
+            <div class="slidecontainer" style="flex: 7; height: 40px">
+              <input
+                type="range"
+                min="0"
+                max="300"
+                value="100"
+                class="slider"
+                id="timeoutSpeed"
+              />
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button id="run" class="btn btn-primary" onclick="run()">
+              Run
+            </button>
+          </div>
+        </div>
+        <div
+          class="white-box align-self-center align-self-stretch"
+          style="flex: 50; width: 100%; margin-right: 0; padding: 20px"
+        >
+          <div
+            id="step-display"
+            style="overflow-y: auto; max-height: 235px"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="visualizer justify-content-center align-items-center animation-zone-parent"
+      >
+        <section
+          class="animation-zone f-flex flex-row"
+          style="justify-content: space-evenly; background-color: white"
+          id="traceZoneParent"
+        >
+          <div
+            id="traceZone"
+            style="display: flex; flex-direction: column; align-items: center"
+          ></div>
+        </section>
+      </div>
     </main>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="scripts/lcs.js"></script>
   </body>
 </html>

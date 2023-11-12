@@ -139,6 +139,7 @@ function clearSVG(svg) {
 }
 
 function run() {
+  reset();
   let inputBox = document.getElementById("inputBox");
   let n = 5;
   if (inputBox.value) {
@@ -168,6 +169,22 @@ function dynamicFibonacci(n) {
 
   // Return the nth Fibonacci number
   return fib;
+}
+function reset() {
+  currentStep = 0;
+  steps = [];
+  arrowData = [];
+
+  // You can also reset other variables or elements here if needed.
+  // For example, you can clear the SVG element and reset the traceZone content.
+  let traceZone = document.getElementById("traceZone");
+  traceZone.innerHTML = "";
+
+  // Call any other initialization functions you have as needed.
+
+  // If you want to reset the memory table, you can clear its content like this:
+  let memoryTable = document.getElementById("step-display");
+  memoryTable.innerHTML = "";
 }
 
 function replaceElementText(searchText, replaceText) {
