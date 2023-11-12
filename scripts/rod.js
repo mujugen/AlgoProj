@@ -116,7 +116,7 @@ function nextStep(n, price) {
     return false;
   } else {
     let val = dynamicCutRod(n, price);
-    console.log(val);
+
     let timeout = 500 - document.getElementById("timeoutSpeed").value;
 
     function processCutRod(i) {
@@ -125,7 +125,7 @@ function nextStep(n, price) {
         if (i == 0) {
           currentText = `0:0`;
         }
-        console.log(currentText);
+
         let targetText = `${val[i]}`;
         replaceElementText(currentText, targetText);
         updateMemoryTable(i, val[i]);
@@ -149,11 +149,18 @@ function clearSVG(svg) {
 
 function run() {
   reset();
-  let inputBox = document.getElementById("inputBox");
-
-  let price = [0, 2, 5, 9, 10, 12];
+  let inputArray = document.getElementById("arrayValues").value.split(",");
+  let price = [0];
+  if (inputArray.length > 1) {
+    for (let i = 0; i < inputArray.length; i++) {
+      price.push(parseInt(inputArray[i], 10));
+    }
+  } else {
+    price = [0, 2, 5, 9, 10, 12];
+  }
   let n = price.length - 1;
   originalLength = n;
+  console.log(price);
 
   counter = 1;
   let timeout = 500 - document.getElementById("timeoutSpeed").value;
@@ -189,7 +196,6 @@ function dynamicCutRod(n, price) {
 function replaceElementText(searchText, replaceText) {
   // Get all elements with the specified class name
   var elements = document.getElementsByClassName("array-element2");
-  console.log(elements);
 
   // Loop through the elements
   for (var i = 0; i < elements.length; i++) {
@@ -197,7 +203,7 @@ function replaceElementText(searchText, replaceText) {
     if (elements[i].innerText === searchText) {
       // Get the adjacent sibling element
       var adjacentElement = elements[i].nextElementSibling;
-
+      removeRelatedArrows(elements[i]);
       // Check if there is an adjacent element
       if (adjacentElement) {
         // Remove the adjacent element
@@ -214,7 +220,12 @@ function replaceElementText(searchText, replaceText) {
     }
   }
 }
-
+function removeRelatedArrows(element) {
+  // Filter out arrow data where the current element is either the source or the destination
+  arrowData = arrowData.filter(
+    (arrow) => arrow.from !== element && arrow.to !== element
+  );
+}
 function createMemoryTable(n, price) {
   let table = document.createElement("table");
   table.style.width = "100%"; // Set table width to 100% of its parent
