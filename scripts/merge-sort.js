@@ -47,15 +47,12 @@ $(document).ready(() => {
   // Unsort button
 
   $("#unsort").click(() => {
-    let sortedArray = $("div.array-container")[0];
-    let unsortedArray = [];
-    for (let i = sortedArray.childNodes.length - 1; i >= 0; i--)
-      unsortedArray.push($(sortedArray.childNodes[i]).text());
-    unsort(unsortedArray);
-    sorted = false;
+    reset();
   });
 });
-
+function reset() {
+  window.location.reload();
+}
 let $container;
 let miliseconds = { value: 500 };
 
