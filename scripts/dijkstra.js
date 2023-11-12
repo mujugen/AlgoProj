@@ -102,15 +102,13 @@ const yScale = d3
 async function runDijkstra() {
   resetGraphColoring();
   removeAllStepDisplayElements();
-  const source = document.getElementById("startNodeInput").value.toLowerCase();
-  const destination = document
-    .getElementById("endNodeInput")
-    .value.toLowerCase();
+  let source = document.getElementById("startNodeInput").value.toLowerCase();
+  let destination = document.getElementById("endNodeInput").value.toLowerCase();
 
   // Validation for the nodes
   if (!getNodeByName(source) || !getNodeByName(destination)) {
-    alert("Invalid node(s)!");
-    return;
+    source = "a";
+    destination = "f";
   }
 
   // Run Dijkstra's algorithm

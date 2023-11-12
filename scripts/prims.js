@@ -459,6 +459,7 @@ window.addEventListener("resize", resizeSVG);
 initializePrim();
 
 function run() {
+  reset();
   counter = 1;
   let timeout = 1300 - document.getElementById("timeoutSpeed").value;
 
@@ -470,4 +471,21 @@ function run() {
 
     counter++;
   }, timeout);
+}
+
+function reset() {
+  nodes = [];
+  links = [];
+  nodeCount = 0;
+  counter = 1;
+  width = undefined;
+  height = undefined;
+  mstLinks = [];
+  edgeQueue = new MinPriorityQueue();
+  added = new Set();
+  removeAllStepDisplayElements();
+  resetGraphColoring();
+  importGraph();
+  resizeSVG();
+  initializePrim();
 }
