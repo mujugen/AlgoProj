@@ -363,40 +363,34 @@ function updateGraphForPrim(link, newNode) {
 }
 
 function importGraph() {
-  let serializedGraph = localStorage.getItem("graphData");
-  if (serializedGraph) {
-    const graph = JSON.parse(serializedGraph);
-    nodes = [
-      { id: "a", x: 1080, y: 320, color: "#999" },
-      { id: "b", x: 1120, y: 280, color: "#999" },
-      { id: "c", x: 1060, y: 260, color: "#999" },
-      { id: "d", x: 1140, y: 240, color: "#999" },
-      { id: "e", x: 1100, y: 200, color: "#999" },
-      { id: "f", x: 1160, y: 160, color: "#999" },
-      { id: "g", x: 1040, y: 160, color: "#999" },
-      { id: "h", x: 1020, y: 220, color: "#999" },
-      { id: "i", x: 1100, y: 140, color: "#999" },
-    ];
+  nodes = [
+    { id: "a", x: 1080, y: 320, color: "#999" },
+    { id: "b", x: 1120, y: 280, color: "#999" },
+    { id: "c", x: 1060, y: 260, color: "#999" },
+    { id: "d", x: 1140, y: 240, color: "#999" },
+    { id: "e", x: 1100, y: 200, color: "#999" },
+    { id: "f", x: 1160, y: 160, color: "#999" },
+    { id: "g", x: 1040, y: 160, color: "#999" },
+    { id: "h", x: 1020, y: 220, color: "#999" },
+    { id: "i", x: 1100, y: 140, color: "#999" },
+  ];
 
-    links = [
-      { source: "a", target: "b", weight: "2", color: "#000000" },
-      { source: "b", target: "d", weight: "3", color: "#000000" },
-      { source: "a", target: "c", weight: "1", color: "#000000" },
-      { source: "c", target: "e", weight: "3", color: "#000000" },
-      { source: "d", target: "e", weight: "1", color: "#000000" },
-      { source: "e", target: "f", weight: "2", color: "#000000" },
-      { source: "d", target: "f", weight: "1", color: "#000000" },
-      { source: "e", target: "g", weight: "2", color: "#000000" },
-      { source: "h", target: "g", weight: "2", color: "#000000" },
-      { source: "c", target: "h", weight: "2", color: "#000000" },
-      { source: "g", target: "i", weight: "1", color: "#000000" },
-      { source: "f", target: "i", weight: "1", color: "#000000" },
-      { source: "e", target: "i", weight: "1", color: "#000000" },
-    ];
-    updateGraph();
-  } else {
-    console.warn("No graph data found in local storage.");
-  }
+  links = [
+    { source: "a", target: "b", weight: "2", color: "#999" },
+    { source: "b", target: "d", weight: "3", color: "#999" },
+    { source: "a", target: "c", weight: "1", color: "#999" },
+    { source: "c", target: "e", weight: "3", color: "#999" },
+    { source: "d", target: "e", weight: "1", color: "#999" },
+    { source: "e", target: "f", weight: "2", color: "#999" },
+    { source: "d", target: "f", weight: "1", color: "#999" },
+    { source: "e", target: "g", weight: "2", color: "#999" },
+    { source: "h", target: "g", weight: "2", color: "#999" },
+    { source: "c", target: "h", weight: "2", color: "#999" },
+    { source: "g", target: "i", weight: "1", color: "#999" },
+    { source: "f", target: "i", weight: "1", color: "#999" },
+    { source: "e", target: "i", weight: "1", color: "#999" },
+  ];
+  updateGraph();
 }
 
 function updateStepDisplay(stepText) {
